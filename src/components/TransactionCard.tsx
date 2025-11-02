@@ -1,5 +1,6 @@
 import type {Transaction} from "../App.tsx";
-import {Box, Flex, Text} from "@chakra-ui/react";
+import {Box, Button, Flex, Icon, Text} from "@chakra-ui/react";
+import {FiCheck, FiX} from "react-icons/fi";
 
 type CardProps = {
     transaction: Transaction
@@ -13,13 +14,14 @@ function TransactionCard({transaction}: CardProps){
             borderRadius="lg"
             overflow="show"
             p={4}
+            w={"100%"}
             shadow={"lg"}
             _hover={{ boxShadow: "md" }}
             justifyContent={"left"}
         >
             <Flex>
-                <div style={{paddingRight:"10px"}}>
-                    <Text fontSize={"lg"} fontWeight={"bold"}>{id}</Text>
+                <div style={{paddingRight:"10px", width:"80%"}}>
+                    <Text fontSize={"lg"} fontWeight={"bold"} textAlign={"left"}>{id}</Text>
                     <Flex wrap="wrap" justify="space-between" mb={2} gap={2}>
                         <Text><b>Jurisdiction</b>: {booking_jurisdiction}</Text>
                         <Text><b>Regulator</b>: {regulator}</Text>
@@ -30,7 +32,12 @@ function TransactionCard({transaction}: CardProps){
                         <Text><b>Amount</b>: {amount} {currency}</Text>
                     </Flex>
                 </div>
-                <Text>placeholder</Text>
+                <Button bg={"red"}>
+                    <Icon as={FiX} color={"black"}/>
+                </Button>
+                <Button bg={"green"}>
+                    <Icon as={FiCheck} color={"black"}/>
+                </Button>
             </Flex>
         </Box>
     )
