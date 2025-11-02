@@ -1,13 +1,13 @@
-import type {Transaction} from "../App.tsx";
-import {Box, Button, Flex, Icon, Text} from "@chakra-ui/react";
-import {FiCheck, FiX} from "react-icons/fi";
+import type { Transaction } from "../App.tsx";
+import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { FiCheck, FiX } from "react-icons/fi";
 
 type CardProps = {
     transaction: Transaction
 }
 
-function TransactionCard({transaction}: CardProps){
-    const {id, booking_jurisdiction, regulator, amount, currency, date, time, suspicion} = transaction;
+function TransactionCard({ transaction }: CardProps){
+    const { transaction_id, regulator, value_date, suspicion_confidence, flagged } = transaction;
     return (
         <Box
             borderWidth="1px"
@@ -22,21 +22,16 @@ function TransactionCard({transaction}: CardProps){
             <Flex justifyContent={"space-evenly"} alignItems={"center"}>
                 <div style={{paddingRight:"10px", width:"80%"}}>
                     <Flex justifyContent={"space-between"}>
-                        <Text fontSize={"lg"} fontWeight={"bold"} textAlign={"left"}>{id}</Text>
-                        <Box bg={suspicion ? "red" : suspicion == false ? "green" : "grey"}>
+                        <Text fontSize={"lg"} fontWeight={"bold"} textAlign={"left"}>{transaction_id}</Text>
+                        <Box bg={flagged === 1 ? "red.200" : "green.200"}>
                             <Text p={1}>
-                                {suspicion != null ? suspicion : "Untested"}
+                                {Math.round((suspicion_confidence || 0) * 100)}
                             </Text>
                         </Box>
                     </Flex>
                     <Flex wrap="wrap" justify="space-between" mb={2} gap={2}>
-                        <Text><b>Jurisdiction</b>: {booking_jurisdiction}</Text>
                         <Text><b>Regulator</b>: {regulator}</Text>
-                    </Flex>
-
-                    <Flex wrap="wrap" justify="space-between" gap={2}>
-                        <Text><b>Date</b>: {date} {time}</Text>
-                        <Text><b>Amount</b>: {amount} {currency}</Text>
+                        <Text><b>Value Date</b>: {value_date}</Text>
                     </Flex>
                 </div>
                 <Button bg={"red"} aspectRatio={"5/4"}>

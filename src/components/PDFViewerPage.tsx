@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FileText, X, FileCode } from 'lucide-react';
+import { FiFileText, FiX, FiFile } from 'react-icons/fi';
 
 type PDF = {
   id: string;
@@ -58,7 +58,7 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
             className="p-1 rounded hover:bg-gray-100"
             title="Back to transactions"
           >
-            <X size={20} className="text-gray-600" />
+            <FiX size={20} className="text-gray-600" />
           </button>
         </div>
 
@@ -73,7 +73,7 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
                   : 'border-transparent text-gray-700 hover:bg-gray-50'
               }`}
             >
-              {doc.type === 'json' ? <FileCode size={18} /> : <FileText size={18} />}
+              {doc.type === 'json' ? <FiFile size={18} /> : <FiFileText size={18} />}
               {doc.name}
             </button>
           ))}

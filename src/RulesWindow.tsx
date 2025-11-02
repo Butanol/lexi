@@ -1,5 +1,5 @@
 import PDFViewerPage from './components/PDFViewerPage';
 
-function App() {
+export default function RulesWindow() {
   return <PDFViewerPage />;
 }
