@@ -81,20 +81,28 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden items-center">
         <div className="bg-white p-4 border-b">
-          <h1 className="text-xl font-semibold text-gray-800 width-full py-10">
+          <h1 className="text-xl font-semibold text-gray-800 width-full py-10 items-center">
             {selectedDoc?.name || 'Select a document'}
           </h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 bg-gray-50 flex justify-center items-center">
           {selectedDoc ? (
             selectedDoc.type === 'pdf' ? (
               <iframe
                 src={selectedDoc.url}
                 title={selectedDoc.name}
-                className="w-full h-full bg-white rounded shadow border-none"
+      className="rounded shadow"
+      style={{
+        width: '100%',
+        height: '100%',
+        maxWidth: '1200px', // limit to max width
+        minHeight: '800px',
+        maxHeight: '1200px',  // limit to max height
+        border: 'none',
+      }}
               />
             ) : (
               <div className="space-y-4 max-w-4xl mx-auto">
