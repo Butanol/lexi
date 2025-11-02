@@ -8,6 +8,7 @@ export type Transaction = {
     transaction_id: string,
     regulator: string,
     value_date: string,
+    assign_team: string,
     suspicion_confidence: number,
     flagged: number
 }
@@ -22,17 +23,19 @@ function parseCSV(csvText: string): Transaction[] {
     const vd = idx('value_date')
     const sc = idx('suspicion_confidence')
     const fl = idx('flagged')
+    const at = idx('assign_team')
 
     const out: Transaction[] = []
     for (let i = 1; i < lines.length; i++){
         const row = lines[i]
         // simple CSV split - assumes no commas in quoted fields for this dataset
         const cols = row.split(',')
-        if (cols.length <= Math.max(tid, reg, vd, sc, fl)) continue
+        if (cols.length <= Math.max(tid, reg, vd, at, sc, fl)) continue
         out.push({
             transaction_id: cols[tid],
             regulator: cols[reg],
             value_date: cols[vd],
+            assign_team: cols[at],
             suspicion_confidence: parseFloat(cols[sc]) || 0,
             flagged: parseInt(cols[fl]) || 0
         })

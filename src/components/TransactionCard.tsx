@@ -7,7 +7,7 @@ type CardProps = {
 }
 
 function TransactionCard({ transaction }: CardProps){
-    const { transaction_id, regulator, value_date, suspicion_confidence, flagged } = transaction;
+    const { transaction_id, regulator, value_date, suspicion_confidence, flagged, assign_team } = transaction;
     return (
         <Box
             borderWidth="1px"
@@ -32,6 +32,7 @@ function TransactionCard({ transaction }: CardProps){
                     <Flex wrap="wrap" justify="space-between" mb={2} gap={2}>
                         <Text><b>Regulator</b>: {regulator}</Text>
                         <Text><b>Value Date</b>: {value_date}</Text>
+                        <Text><b>Assigned Team</b>: {assign_team}</Text>
                     </Flex>
                 </div>
                 <Button bg={"red"} aspectRatio={"5/4"}>
