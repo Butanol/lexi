@@ -31,6 +31,8 @@ function App() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isDragging, setIsDragging] = useState(false);
 
+    const [isReviewMode, setIsReviewMode] = useState(false);
+
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(true);
@@ -67,29 +69,55 @@ function App() {
                     </VStack>
                 </Box>
                 <Box h={"100%"} w = {"40%"}>
-                    <Box
-                        w="100%"
-                        maxW="500px"
-                        h="100%"
-                        border="3px dashed"
-                        borderColor={isDragging ? 'brand.400' : 'gray.300'}
-                        borderRadius="xl"
-                        bg={isDragging ? 'brand.50' : 'gray.50'}
-                        transition="all 0.3s"
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        position="relative"
-                        _hover={{
-                          borderColor: 'brand.400',
-                          bg: 'brand.50',
-                        }}
-                    >
-                        <Center h={"100%"} flexDirection={"column"}>
-                            <Icon as={FiUpload}/>
-                        </Center>
+                    {!isReviewMode ? (
+                        <>
+                            <Box
+                                w="80%"
+                                maxW="500px"
+                                h="100%"
+                                border="3px dashed"
+                                borderColor={isDragging ? 'brand.400' : 'gray.300'}
+                                borderRadius="xl"
+                                bg={isDragging ? 'brand.50' : 'gray.50'}
+                                transition="all 0.3s"
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                position="relative"
+                                _hover={{
+                                    borderColor: 'brand.400',
+                                    bg: 'brand.50',
+                                }}
+                            >
+                                <Center h={"100%"} flexDirection={"column"}>
+                                    <Icon as={FiUpload}/>
+                                </Center>
 
-                    </Box>
+                            </Box>
+                        </>
+                        ) :
+                        (
+                        <>
+                            <Box
+                                w="100%"
+                                maxW="500px"
+                                h="100%"
+                                border="3px dashed"
+                                borderColor={isDragging ? 'brand.400' : 'gray.300'}
+                                borderRadius="xl"
+                                bg={isDragging ? 'brand.50' : 'gray.50'}
+                                transition="all 0.3s"
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                position="relative"
+                                _hover={{
+                                    borderColor: 'brand.400',
+                                    bg: 'brand.50',
+                                }}
+                            >
+                            </Box>
+                        </>)}
                 </Box>
             </Flex>
         </>

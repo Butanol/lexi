@@ -5,7 +5,7 @@ function RulesWindow(isOpen:boolean){
 
     return (
         <>
-            <Modal isOpen={isOpen}>
+            <Modal isOpen={isOpen} onClose={}>
                 <Box></Box>
             </Modal>
         </>

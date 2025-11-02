@@ -7,7 +7,7 @@ type CardProps = {
 }
 
 function TransactionCard({transaction}: CardProps){
-    const {id, booking_jurisdiction, regulator, amount, currency, date, time} = transaction;
+    const {id, booking_jurisdiction, regulator, amount, currency, date, time, rating} = transaction;
     return (
         <Box
             borderWidth="1px"
@@ -17,11 +17,16 @@ function TransactionCard({transaction}: CardProps){
             w={"100%"}
             shadow={"lg"}
             _hover={{ boxShadow: "md" }}
-            justifyContent={"left"}
+            alignItems={"center"}
         >
-            <Flex>
+            <Flex justifyContent={"space-evenly"} alignItems={"center"}>
                 <div style={{paddingRight:"10px", width:"80%"}}>
-                    <Text fontSize={"lg"} fontWeight={"bold"} textAlign={"left"}>{id}</Text>
+                    <Flex justifyContent={"space-between"}>
+                        <Text fontSize={"lg"} fontWeight={"bold"} textAlign={"left"}>{id}</Text>
+                        <Box bg={"red"}>
+                            <Text>risk</Text>
+                        </Box>
+                    </Flex>
                     <Flex wrap="wrap" justify="space-between" mb={2} gap={2}>
                         <Text><b>Jurisdiction</b>: {booking_jurisdiction}</Text>
                         <Text><b>Regulator</b>: {regulator}</Text>
@@ -32,10 +37,10 @@ function TransactionCard({transaction}: CardProps){
                         <Text><b>Amount</b>: {amount} {currency}</Text>
                     </Flex>
                 </div>
-                <Button bg={"red"}>
+                <Button bg={"red"} aspectRatio={"5/4"}>
                     <Icon as={FiX} color={"black"}/>
                 </Button>
-                <Button bg={"green"}>
+                <Button bg={"green"} aspectRatio={"5/4"}>
                     <Icon as={FiCheck} color={"black"}/>
                 </Button>
             </Flex>
