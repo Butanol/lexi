@@ -21,7 +21,6 @@ type PDFViewerPageProps = {
 };
 
 export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
-  const [showViewer, setShowViewer] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [jsonRules, setJsonRules] = useState<any>(null);
 
@@ -33,6 +32,20 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
       .catch(err => console.error('Error loading JSON rules:', err));
   }, []);
 
+  // Auto-select first document on mount
+  useEffect(() => {
+    if (documents.length > 0 && !selectedDoc) {
+      setSelectedDoc(documents[0]);
+    }
+  }, []);
+
+  // Auto-select first document on mount
+  useEffect(() => {
+    if (documents.length > 0 && !selectedDoc) {
+      setSelectedDoc(documents[0]);
+    }
+  }, []);
+
   const documents: Document[] = [
     { id: 'json-rules', name: 'MAS Notice 626 - JSON Rules', type: 'json' },
     { id: 'pdf-1', name: 'MAS Notice 626 30 June 2025', url: '/pdfs/MAS Notice 626 Amendment  new.pdf', type: 'pdf' },
@@ -42,41 +55,17 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
     { id: 'pdf-5', name: 'MAS Notice 626 30 Nov 2015', url: '/pdfs/MAS Notice 626 Amendment Notice November 2015.pdf', type: 'pdf' },
   ];
 
-  const handleOpenViewer = () => {
-    setShowViewer(true);
-    if (!selectedDoc && documents.length > 0) {
-      setSelectedDoc(documents[0]);
-    }
-  };
-
-  const handleCloseViewer = () => {
-    setShowViewer(false);
-  };
-
-  if (!showViewer) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex items-center justify-center p-4">
-        <button
-          onClick={handleOpenViewer}
-          className="px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2"
-        >
-          <FileText size={24} />
-          <span>Open Document Viewer</span>
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="h-screen flex bg-gray-100">
       {/* Sidebar */}
-      <div className="w-72 bg-white shadow-lg flex flex-col">
-        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="bg-white shadow-lg flex flex-col" style={{ width: '20%' }}>
+        <div className="border-b border-gray-200 flex justify-between items-center" style={{ padding: '2%' }}>
           <h2 className="text-lg font-semibold text-gray-800">Documents</h2>
           <button
-            onClick={handleCloseViewer}
-            className="p-1 hover:bg-gray-100 rounded transition-colors"
-            title="Close viewer"
+            onClick={onClose}
+            className="hover:bg-gray-100 rounded transition-colors"
+            style={{ padding: '0.5%' }}
+            title="Back to transactions"
           >
             <X size={20} className="text-gray-600" />
           </button>
@@ -87,9 +76,10 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
             <button
               key={doc.id}
               onClick={() => setSelectedDoc(doc)}
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 flex items-center gap-3 ${
+              className={`w-full text-left hover:bg-gray-50 transition-colors border-b border-gray-100 flex items-center gap-3 ${
                 selectedDoc?.id === doc.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''
               }`}
+              style={{ padding: '2% 3%' }}
             >
               {doc.type === 'json' ? (
                 <FileCode
@@ -116,13 +106,13 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
 
       {/* Main Display Area */}
       <div className="flex-1 flex flex-col">
-        <div className="bg-white shadow-sm px-6 py-4 border-b border-gray-200">
+        <div className="bg-white shadow-sm border-b border-gray-200" style={{ padding: '2% 3%' }}>
           <h1 className="text-xl font-semibold text-gray-800">
             {selectedDoc ? selectedDoc.name : 'No document selected'}
           </h1>
         </div>
 
-        <div className="flex-1 bg-gray-50 p-6 overflow-y-auto">
+        <div className="flex-1 bg-gray-50 overflow-y-auto" style={{ padding: '2%' }}>
           {selectedDoc ? (
             selectedDoc.type === 'pdf' ? (
               <iframe
@@ -131,10 +121,10 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
                 title={selectedDoc.name}
               />
             ) : (
-              <div className="max-w-5xl mx-auto">
+              <div style={{ maxWidth: '90%', margin: '0 auto' }}>
                 {/* Regulation Summary */}
-                <div className="bg-white p-6 rounded-md shadow-sm mb-6">
-                  <h2 className="text-lg font-semibold mb-4 text-gray-800">
+                <div className="bg-white rounded-md shadow-sm" style={{ padding: '3%', marginBottom: '3%' }}>
+                  <h2 className="text-lg font-semibold text-gray-800" style={{ marginBottom: '2%' }}>
                     Regulation Summary
                   </h2>
                   <p className="text-gray-700 leading-relaxed">
@@ -143,44 +133,44 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
                 </div>
 
                 {/* Actionable Rules */}
-                <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+                <h2 className="text-2xl font-semibold text-gray-800" style={{ marginBottom: '2%' }}>
                   Actionable Rules
                 </h2>
                 <div className="space-y-4">
                   {jsonRules?.actionablerules?.map((rule: any) => (
-                    <div key={rule.ruleid} className="bg-white p-6 rounded-md shadow-sm">
-                      <h3 className="text-base font-semibold text-blue-600 mb-3">
+                    <div key={rule.ruleid} className="bg-white rounded-md shadow-sm" style={{ padding: '3%', marginBottom: '2%' }}>
+                      <h3 className="text-base font-semibold text-blue-600" style={{ marginBottom: '2%' }}>
                         {rule.ruleid}
                       </h3>
 
-                      <div className="mb-4">
-                        <p className="font-semibold text-gray-700 mb-1">Obligation:</p>
+                      <div style={{ marginBottom: '2%' }}>
+                        <p className="font-semibold text-gray-700" style={{ marginBottom: '0.5%' }}>Obligation:</p>
                         <p className="text-gray-600 text-sm">{rule.obligation}</p>
                       </div>
 
-                      <div className="mb-4">
-                        <p className="font-semibold text-gray-700 mb-1">Who it applies to:</p>
+                      <div style={{ marginBottom: '2%' }}>
+                        <p className="font-semibold text-gray-700" style={{ marginBottom: '0.5%' }}>Who it applies to:</p>
                         <p className="text-gray-600 text-sm">{rule.whoitappliesto}</p>
                       </div>
 
-                      <div className="mb-4">
-                        <p className="font-semibold text-gray-700 mb-2">Risk signals to monitor:</p>
+                      <div style={{ marginBottom: '2%' }}>
+                        <p className="font-semibold text-gray-700" style={{ marginBottom: '1%' }}>Risk signals to monitor:</p>
                         <div className="space-y-1">
                           {rule.risksignalstomonitor.map((signal: string, idx: number) => (
-                            <p key={idx} className="text-gray-600 text-sm pl-4">
+                            <p key={idx} className="text-gray-600 text-sm" style={{ paddingLeft: '3%' }}>
                               • {signal}
                             </p>
                           ))}
                         </div>
                       </div>
 
-                      <div className="mb-4">
-                        <p className="font-semibold text-gray-700 mb-2">
+                      <div style={{ marginBottom: '2%' }}>
+                        <p className="font-semibold text-gray-700" style={{ marginBottom: '1%' }}>
                           Required documents or controls:
                         </p>
                         <div className="space-y-1">
                           {rule.requireddocumentsorcontrols.map((doc: string, idx: number) => (
-                            <p key={idx} className="text-gray-600 text-sm pl-4">
+                            <p key={idx} className="text-gray-600 text-sm" style={{ paddingLeft: '3%' }}>
                               • {doc}
                             </p>
                           ))}
@@ -188,7 +178,7 @@ export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
                       </div>
 
                       <div>
-                        <p className="font-semibold text-gray-700 mb-1">Requires EDD:</p>
+                        <p className="font-semibold text-gray-700" style={{ marginBottom: '0.5%' }}>Requires EDD:</p>
                         <p className="text-gray-600 text-sm">{rule.requiresedd}</p>
                       </div>
                     </div>
