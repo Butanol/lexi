@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import './App.css'
 import TransactionCard from "./components/TransactionCard.tsx";
-import {Box, Center, Flex, Icon, VStack} from "@chakra-ui/react";
+import {Box, Center, Flex, Icon, VStack, Text} from "@chakra-ui/react";
 import {FiUpload} from "react-icons/fi"
 
 export type Transaction = {
@@ -12,8 +12,13 @@ export type Transaction = {
     currency: string,
     date: string,
     time: string,
-    rating?: number,
-    priorty?: number,
+    suspicion?: boolean,
+}
+
+type UploadedFile = {
+    name: string,
+    size: number,
+    type: string
 }
 
 let test: Transaction = {
@@ -26,10 +31,17 @@ let test: Transaction = {
     time:"2059"
 }
 
+const accepted_document_types = ["application/pdf", "image/pdf", "image/jpeg", "image/pdf"]
+const MAX_FILE_SIZE = 5;
+
 function App() {
 
+    const [uploadedTransaction, setUploadedTransaction] = useState<UploadedFile | null>(null);
+    const [uploadedDocument, setUploadedDocument] = useState<UploadedFile | null>(null);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [isTransactionError, setIsTransactionError] = useState(false);
+    const [documentError, setDocumentError] = useState<String|null>(null);
 
     const [isReviewMode, setIsReviewMode] = useState(false);
 
@@ -43,16 +55,68 @@ function App() {
         setIsDragging(false);
     };
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleTransactionsDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleTransactionsUpload(files[0]);
+        }
     }
+
+    const handleDocumentDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleDocumentUpload(files[0]);
+        }
+        setIsReviewMode(true);
+
+    }
+
+    const handleDocumentUpload = (file: File) => {
+        if (!accepted_document_types) {
+            setDocumentError("Error: Invalid file type")
+            setIsReviewMode(false); //should probably change to some other error alert
+            return
+        } else if (file.size > MAX_FILE_SIZE * 1024 * 1034) {
+            setDocumentError("Error: File size too large");
+            setIsReviewMode(false);
+            return
+        }
+
+        setDocumentError(null);
+        setUploadedDocument({
+            name:file.name,
+            size:file.size,
+            type:file.type
+        })
+    }
+    const handleTransactionsUpload = (file:File) => {
+        if (file.type != "text/csv") {
+            //maybe add an error message
+            return
+        }
+        setUploadedTransaction({
+            name: file.name,
+            type: file.type,
+            size: file.size
+        })
+    }
+
     const loadTransactions = () => {
         setTransactions([test])
     }
+
+    const uploadDocument = () => {
+    }
+
     useEffect(() => {
         loadTransactions()
-    })
+    }, [])
 
 
 
@@ -82,7 +146,7 @@ function App() {
                                 transition="all 0.3s"
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
+                                onDrop={handleDocumentDrop}
                                 position="relative"
                                 _hover={{
                                     borderColor: 'brand.400',
@@ -91,6 +155,7 @@ function App() {
                             >
                                 <Center h={"100%"} flexDirection={"column"}>
                                     <Icon as={FiUpload}/>
+                                    <Text color={"red"}>{documentError != null ? documentError : " "}</Text>
                                 </Center>
 
                             </Box>
@@ -109,7 +174,7 @@ function App() {
                                 transition="all 0.3s"
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
+                                onDrop={handleDocumentDrop}
                                 position="relative"
                                 _hover={{
                                     borderColor: 'brand.400',
