@@ -65,13 +65,14 @@ function App() {
     return (
         <>
             {/* Navigation button */}
-            <Box position="absolute" top={4} right={4} zIndex={10}>
+            <Box position="absolute" top={4} left={4} zIndex={10}>
                 <Button
                     onClick={() => setShowPDFViewer(true)}
                     colorScheme="blue"
                     size="md"
+                    color="black"
                 >
-                    View Documents
+                    View Circulars
                 </Button>
             </Box>
 
