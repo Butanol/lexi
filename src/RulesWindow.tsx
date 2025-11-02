@@ -1,15 +1,5 @@
-import { Modal } from "@chakra-ui/modal";
-import {Box} from "@chakra-ui/react";
+import PDFViewerPage from './components/PDFViewerPage';
 
-function RulesWindow(isOpen:boolean){
-
-    return (
-        <>
-            <Modal isOpen={isOpen} onClose={}>
-                <Box></Box>
-            </Modal>
-        </>
-    )
+function App() {
+  return <PDFViewerPage />;
 }
-
-export default RulesWindow;
