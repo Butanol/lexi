@@ -16,7 +16,11 @@ type JSONDoc = {
 
 type Document = PDF | JSONDoc;
 
-export default function PDFViewerPage() {
+type PDFViewerPageProps = {
+  onClose?: () => void;
+};
+
+export default function PDFViewerPage({ onClose }: PDFViewerPageProps) {
   const [showViewer, setShowViewer] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [jsonRules, setJsonRules] = useState<any>(null);

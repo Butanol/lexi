@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react'
 import './App.css'
 import TransactionCard from "./components/TransactionCard.tsx";
-import {Box, Center, Flex, Icon, VStack, Text} from "@chakra-ui/react";
+import {Box, Center, Flex, Icon, VStack, Button} from "@chakra-ui/react";
 import {FiUpload} from "react-icons/fi"
+import PDFViewerPage from "./components/PDFViewerPage.tsx";
 
 export type Transaction = {
     id: string,
@@ -12,13 +13,8 @@ export type Transaction = {
     currency: string,
     date: string,
     time: string,
-    suspicion?: boolean,
-}
-
-type UploadedFile = {
-    name: string,
-    size: number,
-    type: string
+    rating?: number,
+    priorty?: number,
 }
 
 let test: Transaction = {
@@ -31,19 +27,11 @@ let test: Transaction = {
     time:"2059"
 }
 
-const accepted_document_types = ["application/pdf", "image/pdf", "image/jpeg", "image/pdf"]
-const MAX_FILE_SIZE = 5;
-
 function App() {
-
-    const [uploadedTransaction, setUploadedTransaction] = useState<UploadedFile | null>(null);
-    const [uploadedDocument, setUploadedDocument] = useState<UploadedFile | null>(null);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isDragging, setIsDragging] = useState(false);
-    const [isTransactionError, setIsTransactionError] = useState(false);
-    const [documentError, setDocumentError] = useState<String|null>(null);
-
     const [isReviewMode, setIsReviewMode] = useState(false);
+    const [showPDFViewer, setShowPDFViewer] = useState(false);
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -55,73 +43,38 @@ function App() {
         setIsDragging(false);
     };
 
-    const handleTransactionsDrop = (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
-
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            handleTransactionsUpload(files[0]);
-        }
     }
-
-    const handleDocumentDrop = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            handleDocumentUpload(files[0]);
-        }
-        setIsReviewMode(true);
-
-    }
-
-    const handleDocumentUpload = (file: File) => {
-        if (!accepted_document_types) {
-            setDocumentError("Error: Invalid file type")
-            setIsReviewMode(false); //should probably change to some other error alert
-            return
-        } else if (file.size > MAX_FILE_SIZE * 1024 * 1034) {
-            setDocumentError("Error: File size too large");
-            setIsReviewMode(false);
-            return
-        }
-
-        setDocumentError(null);
-        setUploadedDocument({
-            name:file.name,
-            size:file.size,
-            type:file.type
-        })
-    }
-    const handleTransactionsUpload = (file:File) => {
-        if (file.type != "text/csv") {
-            //maybe add an error message
-            return
-        }
-        setUploadedTransaction({
-            name: file.name,
-            type: file.type,
-            size: file.size
-        })
-    }
-
+    
     const loadTransactions = () => {
         setTransactions([test])
     }
-
-    const uploadDocument = () => {
-    }
-
+    
     useEffect(() => {
         loadTransactions()
-    }, [])
+    })
 
+    // Show PDF Viewer if active
+    if (showPDFViewer) {
+        return <PDFViewerPage onClose={() => setShowPDFViewer(false)} />;
+    }
 
-
+    // Show main transactions page
     return (
         <>
+            {/* Navigation button */}
+            <Box position="absolute" top={4} right={4} zIndex={10}>
+                <Button
+                    onClick={() => setShowPDFViewer(true)}
+                    colorScheme="blue"
+                    size="md"
+                >
+                    View Documents
+                </Button>
+            </Box>
+
             <Flex height={"90vh"} w={"90vw"}>
                 <Box h={"100%"} w={"60%"} bg={"gray.100"} borderRadius={"md"} p={6}>
                     <VStack w={"100%"} align={"stretch"}>
@@ -146,7 +99,7 @@ function App() {
                                 transition="all 0.3s"
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
-                                onDrop={handleDocumentDrop}
+                                onDrop={handleDrop}
                                 position="relative"
                                 _hover={{
                                     borderColor: 'brand.400',
@@ -155,13 +108,10 @@ function App() {
                             >
                                 <Center h={"100%"} flexDirection={"column"}>
                                     <Icon as={FiUpload}/>
-                                    <Text color={"red"}>{documentError != null ? documentError : " "}</Text>
                                 </Center>
-
                             </Box>
                         </>
-                        ) :
-                        (
+                    ) : (
                         <>
                             <Box
                                 w="100%"
@@ -174,7 +124,7 @@ function App() {
                                 transition="all 0.3s"
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
-                                onDrop={handleDocumentDrop}
+                                onDrop={handleDrop}
                                 position="relative"
                                 _hover={{
                                     borderColor: 'brand.400',
@@ -182,7 +132,8 @@ function App() {
                                 }}
                             >
                             </Box>
-                        </>)}
+                        </>
+                    )}
                 </Box>
             </Flex>
         </>
