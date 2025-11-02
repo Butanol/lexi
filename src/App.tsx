@@ -8,34 +8,64 @@ export type Transaction = {
     transaction_id: string,
     regulator: string,
     value_date: string,
-    assign_team: string,
+    assign_team?: string,
     suspicion_confidence: number,
     flagged: number
+}
+
+// Robust CSV splitter that handles quotes and commas inside quotes
+function splitCSVRow(row: string): string[] {
+    const cols: string[] = []
+    let cur = ''
+    let inQuotes = false
+    for (let i = 0; i < row.length; i++) {
+        const ch = row[i]
+        if (ch === '"') {
+            // Handle escaped quotes "" inside a quoted field
+            if (inQuotes && row[i + 1] === '"') {
+                cur += '"'
+                i++
+            } else {
+                inQuotes = !inQuotes
+            }
+        } else if (ch === ',' && !inQuotes) {
+            cols.push(cur)
+            cur = ''
+        } else {
+            cur += ch
+        }
+    }
+    cols.push(cur)
+    return cols.map(c => c.trim())
 }
 
 function parseCSV(csvText: string): Transaction[] {
     const lines = csvText.split(/\r?\n/).filter(Boolean)
     if (lines.length < 2) return []
-    const headers = lines[0].split(',').map(h => h.trim())
+    const headers = splitCSVRow(lines[0]).map(h => h.trim())
     const idx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase())
     const tid = idx('transaction_id')
     const reg = idx('regulator')
     const vd = idx('value_date')
     const sc = idx('suspicion_confidence')
     const fl = idx('flagged')
-    const at = idx('assign_team')
+    // Support both assign_team and assigned_team
+    const at = (() => {
+        const a1 = idx('assign_team')
+        if (a1 !== -1) return a1
+        return idx('assigned_team')
+    })()
 
     const out: Transaction[] = []
     for (let i = 1; i < lines.length; i++){
         const row = lines[i]
-        // simple CSV split - assumes no commas in quoted fields for this dataset
-        const cols = row.split(',')
+        const cols = splitCSVRow(row)
         if (cols.length <= Math.max(tid, reg, vd, at, sc, fl)) continue
         out.push({
             transaction_id: cols[tid],
             regulator: cols[reg],
             value_date: cols[vd],
-            assign_team: cols[at],
+            assign_team: at >= 0 ? cols[at] : undefined,
             suspicion_confidence: parseFloat(cols[sc]) || 0,
             flagged: parseInt(cols[fl]) || 0
         })
@@ -123,8 +153,32 @@ function App() {
         const files = Array.from(e.dataTransfer.files || [])
         if (files.length) {
             setUploadedFiles(prev => [...prev, ...files])
-            // TODO: Wire up actual upload endpoint if needed.
-            // For now, we just store and list selected files.
+            // Process specific CSV by filename match and append rows
+            const match = files.find(f => f.name.toLowerCase() === 'transactions_final_part1.csv')
+            if (match) {
+                const reader = new FileReader()
+                reader.onload = () => {
+                    try {
+                        const text = String(reader.result || '')
+                        const parsed = parseCSV(text)
+                        // Filter out any already-completed and de-duplicate by transaction_id
+                        const completedSet = loadCompletedFromStorage()
+                        setTransactions(current => {
+                            const existingIds = new Set(current.map(t => t.transaction_id))
+                            const toAppend = parsed.filter(t => !completedSet.has(t.transaction_id) && !existingIds.has(t.transaction_id))
+                            const combined = [...current, ...toAppend]
+                            combined.sort((a, b) => b.suspicion_confidence - a.suspicion_confidence)
+                            return combined
+                        })
+                    } catch (err) {
+                        console.error('Failed to parse dropped CSV:', err)
+                    }
+                }
+                reader.onerror = () => {
+                    console.error('Error reading dropped file')
+                }
+                reader.readAsText(match)
+            }
         }
     }
     return (
