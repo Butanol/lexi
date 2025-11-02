@@ -11,7 +11,9 @@ export type Transaction = {
     amount: string,
     currency: string,
     date: string,
-    time: string
+    time: string,
+    rating?: number,
+    priorty?: number,
 }
 
 let test: Transaction = {
@@ -51,23 +53,24 @@ function App() {
     })
 
 
-        return (
+
+    return (
         <>
-            <Flex height={"100vh"}>
-                <Box flex={"2"}>
-                    <VStack>
+            <Flex height={"90vh"} w={"90vw"}>
+                <Box h={"100%"} w={"60%"} bg={"gray.100"} borderRadius={"md"} p={6}>
+                    <VStack w={"100%"} align={"stretch"}>
                         {transactions.map(transaction => (
-                            <div style={{padding:20}}>
-                                <TransactionCard transaction={transaction} key={transaction.id}/>
-                            </div>
+                            <Box key={transaction.id} w={"100%"} p={5}>
+                                <TransactionCard transaction={transaction}/>
+                            </Box>
                         ))}
                     </VStack>
                 </Box>
-                <Box flex={"1"} h={"100%"}>
+                <Box h={"100%"} w = {"40%"}>
                     <Box
                         w="100%"
                         maxW="500px"
-                        h="400px"
+                        h="100%"
                         border="3px dashed"
                         borderColor={isDragging ? 'brand.400' : 'gray.300'}
                         borderRadius="xl"
@@ -89,7 +92,7 @@ function App() {
                     </Box>
                 </Box>
             </Flex>
-            </>
+        </>
     )
 }
 
