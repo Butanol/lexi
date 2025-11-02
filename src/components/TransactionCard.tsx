@@ -7,7 +7,7 @@ type CardProps = {
 }
 
 function TransactionCard({transaction}: CardProps){
-    const {id, booking_jurisdiction, regulator, amount, currency, date, time, rating} = transaction;
+    const {id, booking_jurisdiction, regulator, amount, currency, date, time, suspicion} = transaction;
     return (
         <Box
             borderWidth="1px"
@@ -23,8 +23,10 @@ function TransactionCard({transaction}: CardProps){
                 <div style={{paddingRight:"10px", width:"80%"}}>
                     <Flex justifyContent={"space-between"}>
                         <Text fontSize={"lg"} fontWeight={"bold"} textAlign={"left"}>{id}</Text>
-                        <Box bg={"red"}>
-                            <Text>risk</Text>
+                        <Box bg={suspicion ? "red" : suspicion == false ? "green" : "grey"}>
+                            <Text p={1}>
+                                {suspicion != null ? suspicion : "Untested"}
+                            </Text>
                         </Box>
                     </Flex>
                     <Flex wrap="wrap" justify="space-between" mb={2} gap={2}>
