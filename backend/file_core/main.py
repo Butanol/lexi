@@ -4,7 +4,6 @@ from jigsawstack import JigsawStack
 from langchain_groq import ChatGroq
 
 
-jigsaw = JigsawStack("pk_33a4a026aaac2da402d770d5b5ca3d5828a5bea32f6fe9914edc19f634536b7b6909549cdb25988aab53dc8085125eeffc19a499493cc9858f6fc405d1246974024FtwLXKudwn9Fv3GQsg")
 validation_llm = ChatGroq(
     model="openai/gpt-oss-120b",
     temperature=0,
