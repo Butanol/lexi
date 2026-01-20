@@ -1,73 +1,102 @@
-# React + TypeScript + Vite
+# Lexi
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Lexi is a web‑based compliance assistant designed for automated analysis
+of internal circulars, regulatory documents, and financial reports. It
+centralizes document ingestion, tracks regulatory changes, and flags
+potential inconsistencies or discrepancies to reduce manual review
+and accelerate compliance workflows.\
+Built for **Singhacks 2025**.
 
-Currently, two official plugins are available:
+![UI](screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **Document Ingestion & Storage**\
+    Upload and manage internal circulars, regulatory notices, SOPs, and
+    financial documents.
 
-## Expanding the ESLint configuration
+-   **Automated Regulatory Analysis**\
+    NLP pipelines extract key rules, obligations, and policy changes
+    across documents.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+-   **Discrepancy Detection**\
+    Scans financial documents and formatting.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+-   **Change Tracking**\
+    Automatically updates between new and existing regulatory documents by running a scrape on \
+    financial institutions.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+-   **Dashboard for Compliance Teams**\
+    A consolidated view of flagged risks, obligations, and upcoming
+    actions.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+------------------------------------------------------------------------
+
+## ⚙️ Setting Up
+
+### Prerequisites
+
+-   Python 3.12+
+-   Node.js 18+
+-   npm (bundled with Node.js)
+
+------------------------------------------------------------------------
+
+## 📦 Installation
+
+### 1. Clone the Repository
+
+``` bash
+git clone https://github.com/Butanol/lexi.git
+cd lexi
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install Frontend Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+``` bash
+cd frontend
+npm install
+npm run dev
 ```
+
+### 3. Set Up the Backend
+
+``` bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+------------------------------------------------------------------------
+
+## Development Workflow
+
+-   Run frontend and backend in separate terminals\
+-   Backend hot‑reload via `uvicorn`\
+-   Frontend hot‑reload via Vite\
+-   Add documents via dashboard UI or API endpoint `/upload`
+
+------------------------------------------------------------------------
+
+## Future Enhancements
+
+-   RAG‑based reasoning over document collections\
+-   Embedding‑based semantic search\
+-   Compliance timelines & obligation reminders\
+-   Multi‑company / multi‑department document spaces
+
+------------------------------------------------------------------------
+
+## License
+
+MIT or a license of your choosing.
+
+------------------------------------------------------------------------
+
+## Credits
+
+Created for *Singhacks 2025*.

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { Box, Flex, Button, Text, Center, Icon } from "@chakra-ui/react";
+import { Box, Flex, Button, Text, Center, } from "@chakra-ui/react";
 import { FiX, FiCheck } from "react-icons/fi";
+import Markdown from "react-markdown"
 import PDFViewerPage from "./components/PDFViewerPage.tsx";
+import remarkGfm from "remark-gfm";
 
 export type Transaction = {
     transaction_id: string,
@@ -79,6 +81,8 @@ function App() {
     const [isDragging, setIsDragging] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
+    const[agentResponse, setAgentResponse] = useState<string>("")
+
     const STORAGE_KEY = 'lexi.completedTransactions'
 
     const loadCompletedFromStorage = (): Set<string> => {
@@ -146,10 +150,18 @@ function App() {
         setIsDragging(false)
     }
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
         e.stopPropagation()
         setIsDragging(false)
+        const docuData = new FormData();
+        docuData.append("file", e.dataTransfer.files[0])
+        const response = await fetch("http://localhost:8000/documentValidation", {
+            method: "POST",
+            body: docuData,
+        })
+        const data = await response.json();
+        setAgentResponse(data.content);
         const files = Array.from(e.dataTransfer.files || [])
         if (files.length) {
             setUploadedFiles(prev => [...prev, ...files])
@@ -181,6 +193,7 @@ function App() {
             }
         }
     }
+
     return (
         <>
             {/* Navigation button */}
@@ -216,7 +229,7 @@ function App() {
                                         <td style={{ padding: '8px', borderTop: '1px solid #E2E8F0' }}>{t.transaction_id}</td>
                                         <td style={{ padding: '8px', borderTop: '1px solid #E2E8F0' }}>{t.regulator}</td>
                                         <td style={{ padding: '8px', borderTop: '1px solid #E2E8F0' }}>{t.value_date}</td>
-                                        <td style={{ padding: '8px', borderTop: '1px solid #E2E8F0', textAlign: 'right' }}>{Math.round(t.suspicion_confidence * 100)}</td>
+                                        <td style={{ padding: '8px', borderTop: '1px solid #E2E8F0', textAlign: 'right' }}>{Math.round(t.suspicion_confidence * 100000)}</td>
                                         <td style={{ padding: '8px', borderTop: '1px solid #E2E8F0' }}>
                                             <button
                                                 aria-label="reject"
@@ -269,10 +282,17 @@ function App() {
                         _hover={{ borderColor: 'blue.400', bg: 'blue.50' }}
                         p={6}
                     >
-                        <Center h="100%" flexDirection="column" gap={3}>
-                            <Icon as={FiX} display="none" />
-                            <Text fontSize="lg" fontWeight="semibold">Drag and drop files here</Text>
-                            <Text fontSize="sm" color="gray.600">PDFs, CSVs, or documents supporting review</Text>
+                        <Center h="100%" flexDirection="column" gap={3} overflow={"scroll"}>
+                            { agentResponse != "" ?
+                                (<>
+                                    <Markdown remarkPlugins={[remarkGfm]}>{agentResponse}</Markdown>
+                                </>) :
+                                    (
+                                        <>
+
+                                        </>
+                                    )
+                            }
                         </Center>
 
                         {uploadedFiles.length > 0 && (
