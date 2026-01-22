@@ -68,17 +68,13 @@ cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-uvicorn main:app --reload
 ```
 
-------------------------------------------------------------------------
-
-## Development Workflow
-
--   Run frontend and backend in separate terminals\
--   Backend hot‑reload via `uvicorn`\
--   Frontend hot‑reload via Vite\
--   Add documents via dashboard UI or API endpoint `/upload`
+### 4. Create .env file with
+```
+GROQ_API_KEY=your_key
+JIGSAW_API_KEY=your_key
+```
 
 ------------------------------------------------------------------------
 
@@ -87,13 +83,8 @@ uvicorn main:app --reload
 -   RAG‑based reasoning over document collections\
 -   Embedding‑based semantic search\
 -   Compliance timelines & obligation reminders\
--   Multi‑company / multi‑department document spaces
-
-------------------------------------------------------------------------
-
-## License
-
-MIT or a license of your choosing.
+-   Multi‑company / multi‑department document spaces\
+-   More advanced action recommendation system
 
 ------------------------------------------------------------------------
 
