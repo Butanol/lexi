@@ -70,7 +70,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Create .env file with
+### 4. Create .env file in Backend Folder with
 ```
 GROQ_API_KEY=your_key
 JIGSAW_API_KEY=your_key
